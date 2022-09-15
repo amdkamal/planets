@@ -4,12 +4,11 @@
 
 html {
   font-family: "Roboto";
-  background-color: #3f3f46;
+  background-color: #27272a;
 }
 .planet-card {
-  background-color: #27272a;
+  background-color: #3f4045;
   position: relative;
-  transition: all 1s;
 }
 .font-gold {
   color: #fbcb56;
@@ -20,8 +19,32 @@ html {
 .font-grey {
   color: #a0a0a9;
 }
+.bg-grey {
+  background: rgb(92, 91, 96);
+  background: linear-gradient(
+    0deg,
+    rgba(92, 91, 96, 1) 0%,
+    rgba(139, 138, 137, 1) 100%,
+    rgba(9, 9, 121, 1) 100%
+  );
+}
+
 .expand-btn {
   position: absolute;
   bottom: 0;
   right: 0;
+}
+.planet-films {
+  color: #fafafa;
+}
+@media screen and (min-width: 768px) {
+  html {
+    background-color: #3f3f46;
+  }
+  .planet-card {
+    background-color: #27272a;
+  }
+  .planet-films {
+    color: #a0a0a9;
+  }
 }

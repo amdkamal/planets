@@ -37,12 +37,15 @@
     </div>
     <div :class="`card-expand ${isExpanded ? '' : 'hidden'}`">
       <div class="wrapper mt-4">
-        <div
-          v-for="film in planet.films"
-          :key="film.url"
-          class="font-grey text-xl font-bold"
-        >
-          {{ film.title }}
+        <Loading v-if="isLoading" />
+        <div v-else>
+          <div
+            v-for="film in planet.films"
+            :key="film.url"
+            class="font-grey text-xl font-bold"
+          >
+            {{ film.title }}
+          </div>
         </div>
       </div>
     </div>
@@ -52,28 +55,41 @@
 <script>
 import moment from "moment";
 import axios from "axios";
+import Loading from "./Loading.vue";
 export default {
   props: ["planet"],
+  components: { Loading },
   data() {
     return {
       isExpanded: false,
+      isLoading: false,
+      filmsList: [],
     };
   },
   methods: {
     timestamp: (date, options) => {
       return moment(date).format(options);
     },
-    expandCard: function () {
-      this.isExpanded = !this.isExpanded;
+    expandCard: async function () {
+      if (this.isExpanded === true) {
+        this.isExpanded = false;
+      } else {
+        this.isExpanded = true;
+        try {
+          this.isLoading = true;
+          const response = await Promise.all(
+            this.filmsList.map((film) => axios.get(film))
+          ).then((values) => values.map((value) => value.data));
+          this.planet.films = response;
+        } catch (error) {
+          console.log(error);
+        }
+      }
+      this.isLoading = false;
     },
   },
-  async mounted() {
-    const response = await axios.get(`https://swapi.dev/api/films`);
-    let films = response.data.results;
-    let includedFilms = films.filter((film) => {
-      return this.planet.films.includes(film.url);
-    });
-    this.planet.films = includedFilms;
+  mounted() {
+    this.filmsList = this.planet.films;
   },
 };
 </script>

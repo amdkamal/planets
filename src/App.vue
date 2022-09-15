@@ -39,8 +39,16 @@ export default {
         (planet) => planet.films.length > 1
       );
 
-      //all people
-      const people = await APIRequest("https://swapi.dev/api/people");
+      let peopleInFilms = [];
+      planetsInFilms.forEach((planet) => {
+        peopleInFilms.push(...planet.residents);
+      });
+
+      const people = await Promise.all(
+        peopleInFilms.map((person) => axios.get(person))
+      ).then((values) => {
+        return values.map((value) => value.data);
+      });
 
       //planets that appear in at least 2 movies and have residents with min total of 5 starships
       let planets = planetsInFilms;
